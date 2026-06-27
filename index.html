@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulador de Examen - Redes y Señales</title>
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+
+    <header>
+        <h1>Simulador Interactivo: Redes y Señales</h1>
+        <p>Responde las preguntas antes de que acabe el tiempo.</p>
+    </header>
+
+    <div class="stats">
+        <span id="progress">Respondidas: 0 / 114</span>
+        <span id="timer">⏱️ 30:00</span>
+        <span id="score">Evaluación pendiente</span>
+    </div>
+
+    <div id="tabs-container" class="tabs hidden">
+        <button id="tab-all" class="tab-btn active" onclick="setFilter('all')">Todas</button>
+        <button id="tab-correct" class="tab-btn" onclick="setFilter('correct')">Aciertos</button>
+        <button id="tab-incorrect" class="tab-btn" onclick="setFilter('incorrect')">Fallos</button>
+    </div>
+
+    <div id="quiz-container"></div>
+
+    <div class="controls">
+        <button id="btn-prev" onclick="changePage(-1)">Anterior</button>
+        <span id="page-info">Página 1 de X</span>
+        <button id="btn-next" onclick="changePage(1)">Siguiente</button>
+    </div>
+
+    <button id="btn-submit" class="submit-btn" onclick="submitExam(false)">Enviar Resultados</button>
+
+    <button id="btn-restart" class="submit-btn hidden" onclick="restartQuiz()" style="background-color: var(--accent);">Reiniciar Cuestionario (Nueva Mezcla)</button>
+
+    <script src="preguntas.js"></script>
+    
+    <script src="script.js"></script>
+
+</body>
+</html>
