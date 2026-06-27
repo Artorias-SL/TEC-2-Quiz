@@ -8,23 +8,18 @@ function shuffleArray(array) {
     }
 }
 
-// Ejecutamos la mezcla inicial
-shuffleArray(db);
-
 // ==========================================
-// 2. CONFIGURACIÓN Y ESTADO DEL SIMULADOR
+// 2. VARIABLES GLOBALES DEL ESTADO
 // ==========================================
+let activeDb = []; // Aquí guardaremos solo la cantidad de preguntas elegidas
 const questionsPerPage = 10;
 let currentPage = 0;
-let totalPages = Math.ceil(db.length / questionsPerPage);
-
-let userAnswers = new Array(db.length).fill(null);
+let totalPages = 1;
+let userAnswers = [];
 let isSubmitted = false;
-
 let currentFilter = 'all'; 
-let filteredIndices = Array.from({length: db.length}, (_, i) => i);
-
-let timeLeft = 45* 60;
+let filteredIndices = [];
+let timeLeft = 45 * 60;
 let timerInterval;
 
 // Referencias al DOM (HTML)
@@ -36,7 +31,7 @@ const pageInfoEl = document.getElementById('page-info');
 const btnPrev = document.getElementById('btn-prev');
 const btnNext = document.getElementById('btn-next');
 const btnSubmit = document.getElementById('btn-submit');
-const btnRestart = document.getElementById('btn-restart'); // Referencia al nuevo botón
+const btnRestart = document.getElementById('btn-restart'); 
 const tabsContainer = document.getElementById('tabs-container');
 
 // ==========================================
@@ -73,15 +68,15 @@ function updateTimerDisplay() {
 // ==========================================
 function updateStats() {
     let answered = userAnswers.filter(ans => ans !== null).length;
-    progressEl.innerText = `Respondidas: ${answered} / ${db.length}`;
+    progressEl.innerText = `Respondidas: ${answered} / ${activeDb.length}`;
     
     if (isSubmitted) {
         let correctCount = 0;
         userAnswers.forEach((ans, idx) => {
-            if (ans === db[idx].a) correctCount++;
+            if (ans === activeDb[idx].a) correctCount++;
         });
-        let percentage = Math.round((correctCount / db.length) * 100);
-        scoreEl.innerText = `Puntuación: ${correctCount} de ${db.length} (${percentage}%)`;
+        let percentage = Math.round((correctCount / activeDb.length) * 100);
+        scoreEl.innerText = `Puntuación: ${correctCount} de ${activeDb.length} (${percentage}%)`;
         scoreEl.style.color = percentage >= 60 ? "var(--correct)" : "var(--incorrect)";
     } else {
         scoreEl.innerText = "Evaluación pendiente";
@@ -108,16 +103,16 @@ function setFilter(mode) {
     document.getElementById(`tab-${mode}`).classList.add('active');
 
     if (mode === 'all') {
-        filteredIndices = Array.from({length: db.length}, (_, i) => i);
+        filteredIndices = Array.from({length: activeDb.length}, (_, i) => i);
     } else if (mode === 'correct') {
         filteredIndices = [];
         userAnswers.forEach((ans, idx) => {
-            if (ans === db[idx].a) filteredIndices.push(idx);
+            if (ans === activeDb[idx].a) filteredIndices.push(idx);
         });
     } else if (mode === 'incorrect') {
         filteredIndices = [];
         userAnswers.forEach((ans, idx) => {
-            if (ans !== db[idx].a) filteredIndices.push(idx);
+            if (ans !== activeDb[idx].a) filteredIndices.push(idx);
         });
     }
     
@@ -146,7 +141,7 @@ function renderPage() {
 
     for (let i = start; i < end; i++) {
         let dbIndex = filteredIndices[i];
-        const item = db[dbIndex];
+        const item = activeDb[dbIndex]; // Leemos desde la BD recortada (activeDb)
         
         const card = document.createElement('div');
         card.className = 'question-card';
@@ -244,7 +239,6 @@ function submitExam(autoSubmit = false) {
     
     tabsContainer.classList.remove('hidden');
     
-    // Ocultar botón enviar, mostrar botón reiniciar
     btnSubmit.classList.add('hidden');
     btnRestart.classList.remove('hidden');
     
@@ -252,38 +246,43 @@ function submitExam(autoSubmit = false) {
     setFilter('all');
 }
 
-// NUEVA FUNCIÓN: Restablece todo a 0, vuelve a mezclar e inicia de nuevo
+// NUEVA FUNCIÓN MEJORADA: Lee la cantidad de preguntas seleccionadas
 function restartQuiz() {
-    // 1. Volver a mezclar el banco de preguntas
+    // 1. Mezclamos la base de datos original completa
     shuffleArray(db);
     
-    // 2. Resetear variables y arrays
-    userAnswers = new Array(db.length).fill(null);
+    // 2. Leemos qué límite seleccionó el usuario
+    const countSelect = document.getElementById('question-count').value;
+    const limit = countSelect === 'all' ? db.length : parseInt(countSelect, 10);
+    
+    // 3. Recortamos el banco a la cantidad exacta de preguntas (activeDb)
+    activeDb = db.slice(0, limit);
+    
+    // 4. Resetear variables y arrays basándonos en activeDb
+    userAnswers = new Array(activeDb.length).fill(null);
     isSubmitted = false;
     currentPage = 0;
-    filteredIndices = Array.from({length: db.length}, (_, i) => i);
-    totalPages = Math.ceil(db.length / questionsPerPage);
+    filteredIndices = Array.from({length: activeDb.length}, (_, i) => i);
+    totalPages = Math.ceil(activeDb.length / questionsPerPage);
     
-    // 3. Resetear cronómetro
+    // 5. Resetear cronómetro
     clearInterval(timerInterval);
-    timeLeft = 30 * 60;
+    timeLeft = 45 * 60; // Mantenemos los 30 min sin importar la cantidad
     timerEl.style.display = 'inline-block';
     timerEl.classList.remove('timer-danger');
     startTimer();
     
-    // 4. Restaurar la interfaz (botones y pestañas)
+    // 6. Restaurar la interfaz (botones y pestañas)
     tabsContainer.classList.add('hidden');
     btnSubmit.classList.remove('hidden');
     btnRestart.classList.add('hidden');
     
-    // 5. Volver a pintar todo el cuestionario desde 0
+    // 7. Volver a pintar todo el cuestionario desde 0
     updateStats();
-    setFilter('all'); // Esto forzará el renderPage()
+    setFilter('all'); 
 }
 
 // ==========================================
-// 7. INICIO DEL SISTEMA
+// 7. INICIO DEL SISTEMA (Ejecuta todo por 1ra vez)
 // ==========================================
-startTimer();
-renderPage();
-updateStats();
+restartQuiz();

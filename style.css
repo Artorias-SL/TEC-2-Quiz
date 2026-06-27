@@ -197,3 +197,33 @@ button:disabled {
     border: 1px solid var(--border-color);
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
 }
+.setup-bar {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 15px 20px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.setup-bar select {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 1em;
+    outline: none;
+    cursor: pointer;
+}
+.setup-bar select:focus {
+    border-color: var(--accent);
+}
+#about{
+    display: flex;
+    width: 100%;
+    align-items: center;
+}

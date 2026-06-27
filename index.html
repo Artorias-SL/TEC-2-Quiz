@@ -12,10 +12,22 @@
         <h1>Simulador Interactivo: Redes y Señales</h1>
         <p>Responde las preguntas antes de que acabe el tiempo.</p>
     </header>
+    <div class="setup-bar">
+        <div>
+            <label for="question-count" style="margin-right: 10px;"><strong>Cantidad de preguntas:</strong></label>
+            <select id="question-count" onchange="restartQuiz()">
+                <option value="10">Simulacro corto (10 preguntas)</option>
+                <option value="20">Simulacro medio (20 preguntas)</option>
+                <option value="50">Simulacro largo (50 preguntas)</option>
+                <option value="all" selected>Examen completo (Todas)</option>
+            </select>
+        </div>
+        <button onclick="restartQuiz()" style="background-color: var(--accent); color: white; margin: 0; border: none;">Aplicar y Mezclar</button>
+    </div>
 
     <div class="stats">
         <span id="progress">Respondidas: 0 / 114</span>
-        <span id="timer">⏱️ 30:00</span>
+        <span id="timer">⏱️ </span>
         <span id="score">Evaluación pendiente</span>
     </div>
 
@@ -36,6 +48,7 @@
     <button id="btn-submit" class="submit-btn" onclick="submitExam(false)">Enviar Resultados</button>
 
     <button id="btn-restart" class="submit-btn hidden" onclick="restartQuiz()" style="background-color: var(--accent);">Reiniciar Cuestionario (Nueva Mezcla)</button>
+    <about><h3>Suerte</h3></about>
 
     <script src="preguntas.js"></script>
     
