@@ -185,3 +185,15 @@ button:disabled {
     font-size: 0.95em;
     color: #c9d1d9;
 }
+.question-image {
+    max-width: 100%;
+    height: auto; /* Mantiene la proporción original de la imagen */
+    display: block;
+    margin: 15px auto; /* Centra la imagen y le da respiro arriba y abajo */
+    border-radius: 8px;
+    background-color: #f0f6fc; /* Fondo claro sutil para que contrasten los gráficos */
+    padding: 15px;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}

@@ -153,7 +153,7 @@ function renderPage() {
         
         const questionTitle = document.createElement('div');
         questionTitle.className = 'question-text';
-        questionTitle.innerText = `${i + 1}. ${item.q}`;
+        questionTitle.innerHTML = `${i + 1}. ${item.q}`;
         
         const optionsList = document.createElement('ul');
         optionsList.className = 'options';
